@@ -4,10 +4,8 @@
  * should be located as "LICENSE.API" in the BuildCraft source code distribution. */
 package buildcraft.api.core;
 
-import net.minecraft.core.BlockPos;
-import net.minecraft.world.level.Level;
+import net.neoforged.fml.loading.FMLLoader;
 
-import java.lang.reflect.Method;
 import java.util.Locale;
 
 /** Provides a way to quickly enable or disable certain debug conditions via VM arguments or whether the client/server
@@ -40,16 +38,7 @@ public class BCDebugging {
         // - "all" All possible debug options are turned on. Lots of spam. Not recommended.
         // In addition logging is force-enabled for prereleases as that makes testing much easier
 
-        boolean isDev;
-        try {
-            Method getBlockEntity = Level.class.getDeclaredMethod("getBlockEntity", BlockPos.class);
-            BCLog.logger.info("[debugger] Method found: Level.getBlockEntity = " + getBlockEntity);
-            isDev = true;
-        } catch (Throwable ignored) {
-            // If it didn't find it then we aren't in a dev environment
-            isDev = false;
-            BCLog.logger.info("[debugger] Not a dev environment!");
-        }
+        boolean isDev = !FMLLoader.isProduction();
 
         String value = System.getProperty("buildcraft.debug");
         if ("enable".equals(value)) DEBUG_STATUS = DebugStatus.ENABLE;
